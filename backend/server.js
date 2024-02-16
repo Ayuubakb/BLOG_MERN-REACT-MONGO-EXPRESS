@@ -5,7 +5,6 @@ const session=require('express-session');
 const MongoDBStore=require('connect-mongodb-session')(session);
 const mongoose=require('mongoose')
 const authentification=require('./Routes/Authent')
-const {verifyAuth} = require('./Controllers/authentControllers')
 const board=require('./Routes/Board')
 
 mongoose.connect('mongodb://localhost:27017/Blog').then(()=>{
@@ -35,11 +34,11 @@ app.use(session({
     store:mongoStrore
 }))
 app.use(express.json())
-app.use(express.urlencoded())
+app.use(express.urlencoded({extended:true}))
+
+app.use('/uploads',express.static('uploads'));
 
 app.use('/authentification',authentification)
-
-app.use('/board',verifyAuth);
 
 app.use('/board',board)
 

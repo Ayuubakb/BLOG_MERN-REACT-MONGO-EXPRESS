@@ -1,14 +1,11 @@
-const mongoose=require('mongoose');
 const User=require('../Models/User');
 const bcrypt=require('bcrypt')
 
 const verifyAuth=(req,res,next)=>{
     if(!req.session.Auth){
-        res.status(403).json({message:false})
-        console.log('Not Authorized');
+        res.status(403).json({message:false,objct:{}})
     }else{
-        res.status(200).json({message:true})
-        console.log('Authorized');
+        res.status(200).json({message:true,objct:req.session.Auth})
     }
 }
 
@@ -17,25 +14,21 @@ const signup=async(req,res)=>{
     req.body.password=await bcrypt.hash(req.body.password,saltRounds)
     const inputs=req.body;
     var flag=true;
-       console.log(inputs);
     await User.findOne({email:inputs.email}).then(
         (result)=>{
             if(result){
                 res.status(400).json({message:'You Already Have An Account'})
-                console.log('You Already Have An Account');
                 flag=false
             }
         }
     ).catch(()=>{
         res.status(500).json({message:'Server Problem, Please try again later'})
     })
-    console.log(flag);
     if(flag){
         await User.findOne({username:inputs.username}).then(
             (result)=>{
                 if(result){
                     res.status(400).json({message:'UserName Already Used'})
-                    console.log('UserName Already Used');
                     flag=false
                 }
             }
@@ -43,20 +36,16 @@ const signup=async(req,res)=>{
             res.status(500).json({message:'Server Problem, Please try again later'})
         })
     }
-    console.log(flag);
     if(flag){
         const newUser=new User(inputs)
         await newUser.save().then(
             ()=>{
                 res.status(301).json({message:"Signed Up Succesfully"})
-                console.log("saved");
             },
             ()=>{
                 res.status(404).json({message:'Something Went Wrong, Please Try Later'})
-                console.log("not saved");
             }
         )
-        console.log("saved");
     }
 }
 
@@ -87,8 +76,22 @@ const login=async(req,res)=>{
         })
 }
 
+const logout=async(req,res)=>{
+    if(req.session.Auth){
+        req.session.destroy(function(err){
+            if(err)
+                res.status(500).json({message:'Try Again Later '})
+            else
+                res.status(301).json({message:'Logged Out'})
+        })
+    }else{
+        res.status(404).json({message:'already Logged Out'});
+    }
+}
+
 module.exports={
     signup,
     login,
-    verifyAuth
+    verifyAuth,
+    logout
 }

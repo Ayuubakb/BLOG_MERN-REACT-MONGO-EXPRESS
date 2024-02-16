@@ -14,8 +14,7 @@ const userSchema=new mongoose.Schema({
         type:String,
     },
     pic:{
-        data:Buffer,
-        contentType:String,
+        type:String,
     }
 })
 
