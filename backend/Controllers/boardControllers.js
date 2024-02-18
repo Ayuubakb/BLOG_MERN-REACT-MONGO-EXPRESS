@@ -1,4 +1,5 @@
 const User=require('../Models/User');
+const Posts=require('../Models/Post');
 const bcrypt=require('bcrypt');
 
 const update=async(req,res)=>{
@@ -56,6 +57,27 @@ const update=async(req,res)=>{
     )
 }
 
+const create=async(req,res)=>{
+    const Paragraph=req.body.paragraph;
+    const Title=req.body.title;
+    let postData={};
+    if(req.file)
+        postData={cover:req.file.filename,title:Title,paragraph:Paragraph}
+    else
+        postData={title:Title,paragraph:Paragraph}
+
+    console.log(postData);
+    const post=new Posts(postData)
+    await post.save().then(
+        ()=>{
+            res.status(200).json({message:'Post Published'})
+        },
+        ()=>{
+            res.status(500).json({message:'Something went wrong, try again'})
+        })
+}
+
 module.exports={
-    update
+    update,
+    create
 }
