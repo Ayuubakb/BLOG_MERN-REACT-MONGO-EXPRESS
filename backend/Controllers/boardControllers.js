@@ -10,15 +10,12 @@ const update=async(req,res)=>{
     const newPass=req.body.newPass
     let pic
     req.file?pic=req.file.filename:'';
-    console.log(usernameIn,emailIn,currPass);
 
     await User.findOne({username:req.session.Auth.username}, 'password').then(
         async(result)=>{
             if(result){
-                console.log('verifying password...');
                 const flag= await bcrypt.compare(currPass,result.password)
                 if(flag){
-                    console.log('true password');
                     let dataUpdate={
                         username:usernameIn,
                         email:emailIn
@@ -28,8 +25,6 @@ const update=async(req,res)=>{
                         dataUpdate={...dataUpdate,password:newPass}
                     }
                     pic!=='' ? dataUpdate={...dataUpdate,pic:pic} : null
-                    console.log(dataUpdate)
-
                     await User.updateOne({username:req.session.Auth.username},dataUpdate).then(
                         (result)=>{
                             console.log('found it');
@@ -46,11 +41,10 @@ const update=async(req,res)=>{
                         }
                     )
                 }else{
-                    console.log('false password');
                     res.status(403).json({message:'Incorrect Password'})
                 }
             }else{
-                console.log('something');
+                console.log('something went wrong');
                 res.status(500).json({message:'Some Thing Went Wrong'})
             }
         }
@@ -68,7 +62,6 @@ const create=async(req,res)=>{
     else
         postData={author:Author,title:Title,paragraph:Paragraph,tag:Tag}
 
-    console.log(postData);
     const post=new Posts(postData)
     await post.save().then(
         ()=>{
@@ -126,7 +119,6 @@ const findArticle=async(req,res)=>{
                                 tag: result.tag,
                                 profile: pic
                             };
-                            console.log(objct)
                             res.status(200).json(objct)
                         }
                     }
