@@ -15,9 +15,9 @@ Each Article have a :
 
 
 ## Demo
-![Alt text](/public/assets/timeline1.png)
-![Alt text](/public/assets/timeline2.png)
-![Alt text](/public/assets/gifLike.gif)
-![Alt text](/public/assets/home1.png)
-![Alt text](/public/assets/home2.png)
+![Alt text](login.png)
+![Alt text](acceuil.png)
+![Alt text](article.png)
+![Alt text](authors.png)
+![Alt text](create.png)
 
